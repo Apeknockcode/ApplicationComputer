@@ -15,7 +15,7 @@ class Cal {
       _displayExpression.isEmpty ? _result : _displayExpression;
 
   // 常量定义
-  static const _operators = ['+', '-', '×', '÷'];
+  static const _operators = ['%', '+', '-', '×', '÷'];
   static const _maxLength = 15;
 
   void addKeys(String key) {
@@ -80,7 +80,6 @@ class Cal {
   }
 
   // 运算符处理逻辑：
-
   void _handleOperator(String op) {
     if (_hasCalculated) {
       _inputExpression = _result;
@@ -100,6 +99,15 @@ class Cal {
     } else {
       _inputExpression += ' $op ';
     }
+
+    // // 检查是否可以添加运算符
+    // if (_inputExpression.endsWith(' ')) {
+    //   // 替换最后的运算符
+    //   _inputExpression =
+    //       _inputExpression.substring(0, _inputExpression.length - 3) + ' $op ';
+    // } else {
+    //   _inputExpression += ' $op ';
+    // }
 
     _isNewNumber = true;
   }
@@ -132,6 +140,24 @@ class Cal {
   }
 
   double _evaluate(List<String> parts) {
+    // 首先处理求余
+    for (int i = 1; i < parts.length - 1; i += 2) {
+      if (parts[i] == '%') {
+        final a = double.parse(parts[i - 1]);
+        final b = double.parse(parts[i + 1]);
+
+        // 检查除数是否为0
+        if (b == 0) throw Exception('除数不能为零');
+
+        // 计算余数
+        final result = a % b;
+
+        parts[i - 1] = result.toString();
+        parts.removeRange(i, i + 2);
+        i -= 2;
+      }
+    }
+
     // 处理乘除
     for (int i = 1; i < parts.length - 1; i += 2) {
       if (parts[i] == '×' || parts[i] == '÷') {
@@ -181,13 +207,22 @@ class Cal {
   String _formatResult(double value) {
     if (value.isInfinite || value.isNaN) throw Exception('计算错误');
 
+    // 对于求余运算，我们可能会得到小数结果
     String result = value.toString();
+
+    // 如果是整数，移除小数点后的.0
     if (result.endsWith('.0')) {
       return result.substring(0, result.length - 2);
     }
+
+    // 处理科学计数法
     if (result.contains('e')) {
-      return value.toStringAsFixed(10).replaceAll(RegExp(r'0*$'), '');
+      return value
+          .toStringAsFixed(10)
+          .replaceAll(RegExp(r'0*$'), '') // 移除末尾的0
+          .replaceAll(RegExp(r'\.$'), ''); // 如果最后是小数点，也移除
     }
+
     return result;
   }
 
