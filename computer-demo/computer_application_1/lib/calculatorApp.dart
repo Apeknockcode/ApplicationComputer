@@ -115,22 +115,29 @@ class _CalculatorAppState extends State<CalculatorApp> {
             children: [
               // 显示表达式
               Container(
-                padding: EdgeInsets.all(16),
                 alignment: Alignment.centerRight,
+                padding: EdgeInsets.symmetric(vertical: 8),
                 child: Text(
                   _cal.expression,
-                  style: TextStyle(fontSize: 24),
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: Colors.grey[600],
+                  ),
                 ),
               ),
-              // 显示结果
-              Container(
-                padding: EdgeInsets.all(16),
-                alignment: Alignment.centerRight,
-                child: Text(
-                  _cal.result,
-                  style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+              // 显示结果（只在计算完成时显示）
+              if (_cal.hasCalculated) // 新增条件
+                Container(
+                  alignment: Alignment.centerRight,
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  child: Text(
+                    _cal.result,
+                    style: TextStyle(
+                      fontSize: 48,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-              ),
             ],
           )),
           Container(
