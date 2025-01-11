@@ -17,10 +17,6 @@ class _CalculatorAppState extends State<CalculatorApp> {
     '÷', 'A', '', '=', 'D' //
   ];
 
-  void _ClickButton(String key) {
-    _cal.addKeys(key);
-  }
-
 // 优化按钮样式
   Widget _buildButton(String key) {
     Color backgroundColor;
