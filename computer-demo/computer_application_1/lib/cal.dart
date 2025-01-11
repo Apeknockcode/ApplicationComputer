@@ -34,15 +34,18 @@ class Cal {
   }
 
   void _handleNumber(String num) {
+    // 如果已经计算过，新的数字输入将重置计算器
+    
+    
     // 处理首位数字为0的情况
     if (_result == '0' && num != '.') {
-      _result = num;
-      _inputExpression = num;
+      // _result = num;
+      _inputExpression += num;
       _isNewNumber = false;
       _hasCalculated = false;
       return;
     }
-    // 如果已经计算过，新的数字输入将重置计算器
+
     if (_hasCalculated) {
       _clear();
       _result = num;
@@ -51,6 +54,7 @@ class Cal {
       _hasCalculated = false;
       return;
     }
+    
  // 更新输入表达式
     if (_lastInputWasOperator) {
       if (num == '0') {
