@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-class calculatorApp extends StatefulWidget {
-  const calculatorApp({super.key});
+class CalculatorApp extends StatefulWidget {
+  const CalculatorApp({super.key});
 
   @override
-  State<calculatorApp> createState() => _calculatorAppState();
+  State<CalculatorApp> createState() => _CalculatorAppState();
 }
 
-class _calculatorAppState extends State<calculatorApp> {
+class _CalculatorAppState extends State<CalculatorApp> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text("我是计算器"),
+    return Scaffold(
+      body: Center(child: Text('CalculatorApp')),
     );
   }
 }
