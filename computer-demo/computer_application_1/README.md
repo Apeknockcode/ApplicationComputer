@@ -24,8 +24,5 @@
 ```
 
 ## 编写页面布局
-大概的整体布局，上下层： 上层为显示区域， 下称为操作区域。 
-
-```
-<img src='/READMEIMAGE/layout.jpg' />
-```
+大概的整体布局，上下层： 上层为显示区域， 下称为操作区域
+![这是图片](READMEIMAGE/layout.jpg "Magic Gardens")
