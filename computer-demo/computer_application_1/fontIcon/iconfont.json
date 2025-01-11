@@ -1,0 +1,142 @@
+{
+  "id": "4802615",
+  "name": "app-computer",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1072700",
+      "name": "0",
+      "font_class": "0",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    },
+    {
+      "icon_id": "1920286",
+      "name": "点",
+      "font_class": "dian",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "6693946",
+      "name": "乘法",
+      "font_class": "chengfax",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "13053532",
+      "name": "百分比",
+      "font_class": "baifenbi",
+      "unicode": "e632",
+      "unicode_decimal": 58930
+    },
+    {
+      "icon_id": "15928761",
+      "name": "chufa",
+      "font_class": "chufa",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "30137785",
+      "name": "等于",
+      "font_class": "dengyu",
+      "unicode": "e73a",
+      "unicode_decimal": 59194
+    },
+    {
+      "icon_id": "36915045",
+      "name": "c",
+      "font_class": "c",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "37087200",
+      "name": "减法",
+      "font_class": "jianfa",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
+      "icon_id": "37274869",
+      "name": "清除",
+      "font_class": "qingchu",
+      "unicode": "e6c6",
+      "unicode_decimal": 59078
+    },
+    {
+      "icon_id": "38702678",
+      "name": "1",
+      "font_class": "a-1",
+      "unicode": "e926",
+      "unicode_decimal": 59686
+    },
+    {
+      "icon_id": "38702679",
+      "name": "3",
+      "font_class": "a-3",
+      "unicode": "e927",
+      "unicode_decimal": 59687
+    },
+    {
+      "icon_id": "38702680",
+      "name": "6",
+      "font_class": "a-6",
+      "unicode": "e928",
+      "unicode_decimal": 59688
+    },
+    {
+      "icon_id": "38702681",
+      "name": "7",
+      "font_class": "a-7",
+      "unicode": "e929",
+      "unicode_decimal": 59689
+    },
+    {
+      "icon_id": "38702682",
+      "name": "5",
+      "font_class": "a-5",
+      "unicode": "e92a",
+      "unicode_decimal": 59690
+    },
+    {
+      "icon_id": "38702683",
+      "name": "9",
+      "font_class": "a-9",
+      "unicode": "e92b",
+      "unicode_decimal": 59691
+    },
+    {
+      "icon_id": "38702684",
+      "name": "8",
+      "font_class": "a-8",
+      "unicode": "e92c",
+      "unicode_decimal": 59692
+    },
+    {
+      "icon_id": "38702685",
+      "name": "4",
+      "font_class": "a-4",
+      "unicode": "e92d",
+      "unicode_decimal": 59693
+    },
+    {
+      "icon_id": "38702688",
+      "name": "2",
+      "font_class": "a-2",
+      "unicode": "e92e",
+      "unicode_decimal": 59694
+    },
+    {
+      "icon_id": "41177032",
+      "name": "加法",
+      "font_class": "hanshu-jiafa",
+      "unicode": "e637",
+      "unicode_decimal": 58935
+    }
+  ]
+}
