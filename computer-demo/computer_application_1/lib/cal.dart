@@ -1,10 +1,12 @@
 class Cal {
-  String _result = '0'; // 当前输入的数字
-  String _displayExpression = ''; // 显示的表达式
-  String _inputExpression = ''; // 记录完整的输入内容
+  // 核心状态
+  String _result = '0';
+  String _inputExpression = '';
+  String _displayExpression = '';
+
+  // 状态标记
   bool _isNewNumber = true;
-  bool _lastInputWasOperator = false;
-  bool _hasCalculated = false; // 新增：标记是否已经计算过
+  bool _hasCalculated = false;
 
   // Getters
   bool get hasCalculated => _hasCalculated;
@@ -12,192 +14,176 @@ class Cal {
   String get expression =>
       _displayExpression.isEmpty ? _result : _displayExpression;
 
+  // 常量定义
+  static const _operators = ['+', '-', '×', '÷'];
+  static const _maxLength = 15;
+
   void addKeys(String key) {
-     // 如果第一个输入就是运算符
-    if (_inputExpression.isEmpty && ['+', '-', '×', '÷'].contains(key)) {
-      _inputExpression = '0';
-      _result = '0';
+    if (_hasCalculated && key.contains(RegExp(r'[0-9]'))) {
+      _clear();
     }
 
-    if (key.contains(RegExp(r'[0-9.]'))) {
-      _handleNumber(key);
-    } else if (['+', '-', '×', '÷'].contains(key)) {
-      _handleOperation(key);
-    } else if (key == '=') {
-      _calculateResult();
-    } else if (key == 'A') {
-      _clear();
-    } else if (key == 'D') {
-      _handleBackspace();
+    switch (key) {
+      case var k when RegExp(r'[0-9.]').hasMatch(k):
+        _handleNumber(k);
+        break;
+      case var k when _operators.contains(k):
+        _handleOperator(k);
+        break;
+      case '=':
+        _calculateResult();
+        break;
+      case 'A':
+        _clear();
+        break;
+      case 'D':
+        _handleBackspace();
+        break;
     }
+
     _updateDisplay();
   }
 
+  // 数字处理逻辑
   void _handleNumber(String num) {
-    // 如果已经计算过，新的数字输入将重置计算器
-    
-    
-    // 处理首位数字为0的情况
-    if (_result == '0' && num != '.') {
-      // _result = num;
-      _inputExpression += num;
-      _isNewNumber = false;
-      _hasCalculated = false;
-      return;
-    }
+    // 处理小数点
+    if (num == '.' && _result.contains('.')) return;
 
-    if (_hasCalculated) {
-      _clear();
-      _result = num;
-      _inputExpression = num;
-      _isNewNumber = false;
-      _hasCalculated = false;
-      return;
-    }
-    
- // 更新输入表达式
-    if (_lastInputWasOperator) {
-      if (num == '0') {
-        _result = '0';
-      } else {
-        _result = num;
-      }
-      _inputExpression += num;
+    // 处理新数字输入
+    if (_isNewNumber) {
+      _result = num == '.' ? '0.' : num;
       _isNewNumber = false;
     } else {
-      if (_isNewNumber) {
+      // 处理数字追加
+      if (_result == '0' && num != '.') {
         _result = num;
-        _isNewNumber = false;
-      } else {
-        // 处理当前数字为0的情况
-        if (_result == '0' && num != '.') {
-          _result = num;
-        } else {
-          if (num == '.' && _result.contains('.')) return;
-          if (_result.length < 15) {
-            _result = _result + num;
-          }
-        }
+      } else if (_result.length < _maxLength) {
+        _result += num;
       }
+    }
 
-      // 更新表达式中的当前数字
-      List<String> parts = _inputExpression.split(' ');
-      if (parts.isEmpty) {
-        _inputExpression = _result;
-      } else {
+    // 更新表达式
+    _updateExpressionWithNumber();
+  }
+
+  void _updateExpressionWithNumber() {
+    if (_inputExpression.isEmpty || _hasCalculated) {
+      _inputExpression = _result;
+    } else {
+      final parts = _inputExpression.split(' ');
+      if (parts.isNotEmpty) {
         parts[parts.length - 1] = _result;
         _inputExpression = parts.join(' ');
       }
     }
-    _lastInputWasOperator = false;
+    _hasCalculated = false;
   }
 
-  void _handleOperation(String op) {
+  // 运算符处理逻辑：
 
-     // 如果已经计算过，使用结果继续计算
+  void _handleOperator(String op) {
     if (_hasCalculated) {
       _inputExpression = _result;
       _hasCalculated = false;
     }
-    
-    // 如果表达式为空或只有0，在运算符前添加0
+
+    // 处理空表达式或只有0的情况
     if (_inputExpression.isEmpty || _inputExpression == '0') {
       _inputExpression = '0';
-      _result = '0';
     }
 
-    if (_lastInputWasOperator) {
-      // 替换最后一个运算符
-      _inputExpression = _inputExpression.substring(0, _inputExpression.length - 3);
-      _inputExpression += ' $op ';
+    // 替换或添加运算符
+    if (_inputExpression.endsWith(' ')) {
+      // 替换最后的运算符
+      _inputExpression =
+          _inputExpression.substring(0, _inputExpression.length - 3) + ' $op ';
     } else {
-      // 确保当前数字已经添加到表达式中
-      if (!_inputExpression.endsWith(_result)) {
-        _inputExpression = _result;
-      }
       _inputExpression += ' $op ';
-      _lastInputWasOperator = true;
     }
+
     _isNewNumber = true;
   }
 
-  void _updateDisplay() {
-     if (_hasCalculated) {
-      // 保持计算结果的显示
-      return;
-    }
-    _displayExpression = _inputExpression;
-  }
+  // 计算结果的处理：
 
   void _calculateResult() {
     if (_inputExpression.isEmpty) return;
 
     try {
-      // 保存原始表达式
-      String originalExpression = _inputExpression;
-      // 分割表达式
-      List<String> parts = _inputExpression.trim().split(' ');
-      List<double> numbers = [];
-      List<String> operators = [];
+      final parts = _inputExpression.trim().split(' ');
+      if (parts.isEmpty) return;
 
-      // 解析表达式
-      for (int i = 0; i < parts.length; i++) {
-        if (i % 2 == 0) {
-          numbers.add(double.parse(parts[i]));
-        } else {
-          operators.add(parts[i]);
-        }
+      // 确保表达式完整
+      if (_operators.contains(parts.last)) {
+        parts.removeLast();
       }
 
-      // 先处理乘除
-      for (int i = 0; i < operators.length; i++) {
-        if (operators[i] == '×' || operators[i] == '÷') {
-          double result;
-          if (operators[i] == '×') {
-            result = numbers[i] * numbers[i + 1];
-          } else {
-            if (numbers[i + 1] == 0) throw Exception('除数不能为零');
-            result = numbers[i] / numbers[i + 1];
-          }
-          numbers[i] = result;
-          numbers.removeAt(i + 1);
-          operators.removeAt(i);
-          i--;
-        }
-      }
+      if (parts.isEmpty) return;
 
-      // 处理加减
-      double finalResult = numbers[0];
-      for (int i = 0; i < operators.length; i++) {
-        if (operators[i] == '+') {
-          finalResult += numbers[i + 1];
-        } else if (operators[i] == '-') {
-          finalResult -= numbers[i + 1];
-        }
-      }
-
-      // 格式化结果
-      _result = _formatResult(finalResult);
-      _displayExpression = '$originalExpression = $_result';
-      // 重置状态
-
-      _isNewNumber = true;
-      _lastInputWasOperator = false;
-      // 标记已经计算
+      final result = _evaluate(parts);
+      _result = _formatResult(result);
+      _displayExpression = '$_inputExpression = $_result';
+      _inputExpression = _result;
       _hasCalculated = true;
+      _isNewNumber = true;
     } catch (e) {
+      _handleError();
+    }
+  }
+
+  double _evaluate(List<String> parts) {
+    // 处理乘除
+    for (int i = 1; i < parts.length - 1; i += 2) {
+      if (parts[i] == '×' || parts[i] == '÷') {
+        final a = double.parse(parts[i - 1]);
+        final b = double.parse(parts[i + 1]);
+        final result = parts[i] == '×' ? a * b : a / b;
+
+        if (parts[i] == '÷' && b == 0) throw Exception('除数不能为零');
+
+        parts[i - 1] = result.toString();
+        parts.removeRange(i, i + 2);
+        i -= 2;
+      }
+    }
+
+    // 处理加减
+    double result = double.parse(parts[0]);
+    for (int i = 1; i < parts.length - 1; i += 2) {
+      final num = double.parse(parts[i + 1]);
+      result += parts[i] == '+' ? num : -num;
+    }
+
+    return result;
+  }
+
+  // 辅助方法
+  void _handleBackspace() {
+    if (_hasCalculated) {
       _clear();
-      _result = '错误';
-      _displayExpression = '错误';
+      return;
+    }
+
+    if (_inputExpression.isNotEmpty) {
+      if (_inputExpression.endsWith(' ')) {
+        _inputExpression =
+            _inputExpression.substring(0, _inputExpression.length - 3);
+        _isNewNumber = false;
+      } else {
+        _inputExpression =
+            _inputExpression.substring(0, _inputExpression.length - 1);
+        _result =
+            _result.length > 1 ? _result.substring(0, _result.length - 1) : '0';
+      }
     }
   }
 
   String _formatResult(double value) {
-    if (value.isInfinite || value.isNaN) return '错误';
+    if (value.isInfinite || value.isNaN) throw Exception('计算错误');
 
     String result = value.toString();
     if (result.endsWith('.0')) {
-      result = result.substring(0, result.length - 2);
+      return result.substring(0, result.length - 2);
     }
     if (result.contains('e')) {
       return value.toStringAsFixed(10).replaceAll(RegExp(r'0*$'), '');
@@ -205,22 +191,10 @@ class Cal {
     return result;
   }
 
-  void _handleBackspace() {
-    if (_inputExpression.isNotEmpty) {
-      if (_inputExpression.endsWith(' ')) {
-        // 删除运算符
-        _inputExpression =
-            _inputExpression.substring(0, _inputExpression.length - 3);
-        _lastInputWasOperator = false;
-      } else {
-        // 删除数字
-        _inputExpression =
-            _inputExpression.substring(0, _inputExpression.length - 1);
-      }
-      // 更新当前数字显示
-      List<String> parts = _inputExpression.trim().split(' ');
-      _result = parts.isEmpty ? '0' : parts.last;
-    }
+  void _handleError() {
+    _clear();
+    _result = '错误';
+    _displayExpression = '错误';
   }
 
   void _clear() {
@@ -228,7 +202,12 @@ class Cal {
     _displayExpression = '';
     _inputExpression = '';
     _isNewNumber = true;
-    _lastInputWasOperator = false;
-    _hasCalculated = false; // 重置计算标记
+    _hasCalculated = false;
+  }
+
+  void _updateDisplay() {
+    if (!_hasCalculated) {
+      _displayExpression = _inputExpression;
+    }
   }
 }
