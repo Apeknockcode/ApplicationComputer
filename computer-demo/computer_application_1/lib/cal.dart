@@ -1,8 +1,13 @@
+import './history_service.dart';
+
 class Cal {
   // 核心状态
   String _result = '0';
   String _inputExpression = '';
   String _displayExpression = '';
+  final HistoryService _historyService;
+
+  Cal(this._historyService);
 
   // 状态标记
   bool _isNewNumber = true;
@@ -130,10 +135,13 @@ class Cal {
 
       final result = _evaluate(parts);
       _result = _formatResult(result);
+       // 添加到历史记录
+      _historyService.addRecord(_inputExpression, _result);
       _displayExpression = '$_inputExpression = $_result';
       _inputExpression = _result;
       _hasCalculated = true;
       _isNewNumber = true;
+     
     } catch (e) {
       _handleError();
     }

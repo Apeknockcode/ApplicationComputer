@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
 import "./cal.dart";
+import './history_service.dart';
+import './history_screen.dart';
 
 class CalculatorApp extends StatefulWidget {
-  const CalculatorApp({super.key});
+  final Cal cal;
+  final HistoryService historyService;
+
+  const CalculatorApp({
+    super.key,
+    required this.cal,
+    required this.historyService,
+  });
 
   @override
   State<CalculatorApp> createState() => _CalculatorAppState();
 }
 
 class _CalculatorAppState extends State<CalculatorApp> {
-  final Cal _cal = Cal();
   List<String> numberKey = [
     '+', '7', '4', '1', '%', //
     '-', '8', '5', '2', '0', //
@@ -47,7 +55,7 @@ class _CalculatorAppState extends State<CalculatorApp> {
               borderRadius: BorderRadius.circular(35),
             ),
           ),
-          onPressed: () => setState(() => _cal.addKeys(key)),
+          onPressed: () => setState(() => widget.cal.addKeys(key)),
           child: Text(
             key,
             style: TextStyle(
@@ -103,7 +111,24 @@ class _CalculatorAppState extends State<CalculatorApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('标准计算器')),
+      appBar: AppBar(
+        title: Text('标准计算器'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.history),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HistoryScreen(
+                    historyService: widget.historyService,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Expanded(
@@ -114,7 +139,7 @@ class _CalculatorAppState extends State<CalculatorApp> {
                 alignment: Alignment.centerRight,
                 padding: EdgeInsets.symmetric(vertical: 8),
                 child: Text(
-                  _cal.expression,
+                  widget.cal.expression,
                   style: TextStyle(
                     fontSize: 24,
                     color: Colors.grey[600],
@@ -122,12 +147,12 @@ class _CalculatorAppState extends State<CalculatorApp> {
                 ),
               ),
               // 显示结果（只在计算完成时显示）
-              if (_cal.hasCalculated) // 新增条件
+              if (widget.cal.hasCalculated) // 新增条件
                 Container(
                   alignment: Alignment.centerRight,
                   padding: EdgeInsets.symmetric(vertical: 8),
                   child: Text(
-                    _cal.result,
+                    widget.cal.result,
                     style: TextStyle(
                       fontSize: 48,
                       fontWeight: FontWeight.bold,
